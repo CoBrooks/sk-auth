@@ -17,7 +17,6 @@ export type ProfileCallback<ProfileType = any, TokensType = any, ReturnType = an
 export interface OAuth2BaseProviderConfig<ProfileType = any, TokensType = any>
   extends ProviderConfig {
   profile?: ProfileCallback<ProfileType, TokensType>;
-  host?: string;
 }
 
 export abstract class OAuth2BaseProvider<
@@ -38,7 +37,7 @@ export abstract class OAuth2BaseProvider<
     const { method } = event.request;
     const { url } = event;
     const state = [
-      `redirect=${url.searchParams.get("redirect") ?? this.getUri(auth, "/", this.config.host ?? url.host)}`,
+      `redirect=${url.searchParams.get("redirect") ?? this.getUri(auth, "/", url.host)}`,
     ].join(",");
     const base64State = Buffer.from(state).toString("base64");
     const nonce = Math.round(Math.random() * 1000).toString(); // TODO: Generate random based on user values
@@ -75,13 +74,13 @@ export abstract class OAuth2BaseProvider<
     const code = url.searchParams.get("code");
     const redirect = this.getStateValue(url.searchParams, "redirect");
 
-    const tokens = await this.getTokens(code!, this.getCallbackUri(auth, this.config.host ?? url.host));
+    const tokens = await this.getTokens(code!, this.getCallbackUri(auth, url.host));
     let user = await this.getUserProfile(tokens);
 
     if (this.config.profile) {
       user = await this.config.profile(user, tokens);
     }
 
-    return [user, redirect ?? this.getUri(auth, "/", this.config.host ?? url.host)];
+    return [user, redirect ?? this.getUri(auth, "/", url.host)];
   }
 }

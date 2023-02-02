@@ -12,6 +12,7 @@ export interface OAuth2ProviderConfig<ProfileType = any, TokensType extends OAut
   clientSecret?: string;
   scope?: string | string[];
   headers?: any;
+  host?: string;
   authorizationParams?: any;
   params?: any;
   grantType?: string;
