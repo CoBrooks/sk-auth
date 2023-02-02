@@ -12,7 +12,6 @@ export interface OAuth2ProviderConfig<ProfileType = any, TokensType extends OAut
   clientSecret?: string;
   scope?: string | string[];
   headers?: any;
-  host?: string;
   authorizationParams?: any;
   params?: any;
   grantType?: string;
@@ -45,7 +44,7 @@ export class OAuth2Provider<
       response_type: this.config.responseType,
       client_id: this.config.clientId,
       scope: Array.isArray(this.config.scope) ? this.config.scope.join(" ") : this.config.scope!,
-      redirect_uri: this.getCallbackUri(auth, this.host ?? url.host),
+      redirect_uri: this.getCallbackUri(auth, this.config.host ?? url.host),
       ...(this.config.authorizationParams ?? {}),
     };
 
